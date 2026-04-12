@@ -1,0 +1,144 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Sparkles, BookOpen, Clock, TrendingUp } from 'lucide-react';
+import axios from 'axios';
+import API from "../api";
+
+const Dashboard = () => {
+  const [topic, setTopic] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [totalCourses, setTotalCourses] = useState(0);
+  const [quizzesTaken, setQuizzesTaken] = useState(0);
+  const [learningHours, setLearningHours] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const syncStats = () => {
+      const quizCount = parseInt(localStorage.getItem('quizzesTaken') || '0');
+      setQuizzesTaken(quizCount);
+
+      const totalSeconds = parseInt(localStorage.getItem('learningSeconds') || '0');
+      const hours = totalSeconds >= 3600
+        ? parseFloat((totalSeconds / 3600).toFixed(1))
+        : parseFloat((totalSeconds / 60).toFixed(0));
+      setLearningHours(hours);
+
+      axios.get('/courses')
+        .then(res => setTotalCourses(Array.isArray(res.data) ? res.data.length : 0))
+        .catch(() => {
+          const keys = Object.keys(localStorage).filter(k => k.startsWith('progress_'));
+          setTotalCourses(keys.length);
+        });
+    };
+
+    syncStats(); // run on mount
+
+    // Re-sync when tab becomes visible (fires AFTER CourseViewer saves time)
+    const handleVisibility = () => {
+      if (!document.hidden) syncStats();
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
+  const handleGenerate = async () => {
+    if (!topic.trim()) { alert('Please enter a topic'); return; }
+    setLoading(true);
+    try {
+      const userId = localStorage.getItem('userId');
+      const response = await API.post('/courses/generate', { topic, userId });
+      const xp = parseInt(localStorage.getItem('userXp') || '0');
+      localStorage.setItem('userXp', (xp + 10).toString());
+      navigate(`/course/${response.data.id}`);
+    } catch (e) {
+      console.error(e);
+      alert('Error generating course. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const totalSeconds = parseInt(localStorage.getItem('learningSeconds') || '0');
+  const isHours = totalSeconds >= 3600;
+  const timeValue = isHours
+    ? parseFloat((totalSeconds / 3600).toFixed(1)).toString()
+    : Math.floor(totalSeconds / 60).toString();
+  const timeLabel = isHours ? 'Learning Hours' : 'Learning Mins';
+
+  const stats = [
+    { icon: BookOpen,   label: 'Total Courses',  value: totalCourses.toString(), color: '#6C63FF', bg: 'rgba(108,99,255,0.15)' },
+    { icon: TrendingUp, label: 'Quizzes Taken',  value: quizzesTaken.toString(), color: '#00D4AA', bg: 'rgba(0,212,170,0.15)'  },
+    { icon: Clock,      label: timeLabel,         value: timeValue,               color: '#FF6B6B', bg: 'rgba(255,107,107,0.15)' },
+  ];
+
+  return (
+    <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+
+      <div className="stat-grid">
+        {stats.map((s, i) => {
+          const Icon = s.icon;
+          return (
+            <motion.div key={i} className="stat-card"
+              initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08 }} whileHover={{ y: -3 }}>
+              <div>
+                <p className="stat-label">{s.label}</p>
+                <h3 className="stat-value">{s.value}</h3>
+              </div>
+              <div className="stat-icon-box" style={{ background: s.bg }}>
+                <Icon size={26} color={s.color} />
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      <motion.div className="gen-card"
+        initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}>
+        <motion.div className="gen-icon"
+          animate={{ rotate: [0, 8, -8, 0] }}
+          transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 4 }}>
+          <Sparkles size={32} color="#fff" />
+        </motion.div>
+        <h2 className="gen-title">Generate Your Course</h2>
+        <p className="gen-sub">Enter any topic and let AI create a personalized learning path</p>
+
+        <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+          <input
+            className="gen-input"
+            type="text" value={topic}
+            onChange={e => setTopic(e.target.value)}
+            onKeyPress={e => e.key === 'Enter' && handleGenerate()}
+            placeholder="e.g., Python, Machine Learning, React.js..."
+          />
+          <motion.button className="gen-btn"
+            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+            onClick={handleGenerate} disabled={loading}>
+            {loading
+              ? <><div className="spinner" /> Generating your course...</>
+              : <><Sparkles size={20} /> Generate Course</>}
+          </motion.button>
+        </div>
+
+        <div className="feature-grid">
+          {[
+            { emoji: '🤖', name: 'AI-Powered',  desc: 'Generated by advanced AI' },
+            { emoji: '📚', name: 'Structured',  desc: 'Well-organized content'   },
+            { emoji: '🎯', name: 'Interactive', desc: 'Quizzes & assessments'    },
+          ].map((f, i) => (
+            <div key={i} className="feature-pill">
+              <div className="feature-emoji">{f.emoji}</div>
+              <div className="feature-name">{f.name}</div>
+              <div className="feature-desc">{f.desc}</div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+
+    </div>
+  );
+};
+
+export default Dashboard;
