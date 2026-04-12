@@ -68,27 +68,32 @@ const Quiz = () => {
     setSelectedAnswers(prev => ({ ...prev, [currentQuestion]: letter }));
   };
 
-  const handleNext = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(prev => prev + 1);
-    } else {
-      setShowResults(true);
-      const currentXp = parseInt(localStorage.getItem('userXp') || '0');
-      localStorage.setItem('userXp', (currentXp + 20).toString());
-      const quizCount = parseInt(localStorage.getItem('quizzesTaken') || '0');
-      localStorage.setItem('quizzesTaken', (quizCount + 1).toString());
+const handleNext = () => {
+  if (currentQuestion < questions.length - 1) {
+    setCurrentQuestion(prev => prev + 1);
+  } else {
+    setShowResults(true);
 
-      // ← ADD: save topic + score for Analytics
-      const pct = Math.round((questions.filter((q, i) => selectedAnswers[i] === q.correctAnswer).length / questions.length) * 100);
-      const scores  = JSON.parse(localStorage.getItem('quizScores')  || '[]');
-      const topics  = JSON.parse(localStorage.getItem('quizTopics')  || '[]');
-      scores.push(pct);
-      topics.push(topic);
-      localStorage.setItem('quizScores',  JSON.stringify(scores));
-      localStorage.setItem('quizTopics',  JSON.stringify(topics));
-    }
+    const correctAnswers = questions.filter((q, i) => selectedAnswers[i] === q.correctAnswer).length;
 
-  };
+    const earnedXP = correctAnswers * 10;
+    const prevXP = parseInt(localStorage.getItem('xp') || '0');
+    localStorage.setItem('xp', (prevXP + earnedXP).toString());
+
+    const quizCount = parseInt(localStorage.getItem('quizzesTaken') || '0');
+    localStorage.setItem('quizzesTaken', (quizCount + 1).toString());
+
+    const pct = Math.round((correctAnswers / questions.length) * 100);
+    const scores = JSON.parse(localStorage.getItem('quizScores') || '[]');
+    const topics = JSON.parse(localStorage.getItem('quizTopics') || '[]');
+
+    scores.push(pct);
+    topics.push(topic);
+
+    localStorage.setItem('quizScores', JSON.stringify(scores));
+    localStorage.setItem('quizTopics', JSON.stringify(topics));
+  }
+};
 
   const score = questions.filter((q, i) => selectedAnswers[i] === q.correctAnswer).length;
   const percentage = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0;
