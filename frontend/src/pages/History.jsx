@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BookOpen, Clock, Trash2, Search, PlusCircle } from 'lucide-react';
 import axios from 'axios';
+import API from "../api";
 
 const History = () => {
   const [courses, setCourses] = useState([]);
@@ -14,7 +15,7 @@ const History = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('/courses');
+      const response = await API.get('/courses');
       setCourses(response.data);
     } catch (err) {
       console.error('Error fetching courses:', err);
@@ -27,7 +28,7 @@ const History = () => {
     e.stopPropagation();
     if (!window.confirm('Delete this course?')) return;
     try {
-      await axios.delete(`/courses/${id}`);
+      await API.delete(`/courses/${id}`);
       setCourses(prev => prev.filter(c => c.id !== id));
       // Clean up localStorage
       localStorage.removeItem(`progress_${id}`);
