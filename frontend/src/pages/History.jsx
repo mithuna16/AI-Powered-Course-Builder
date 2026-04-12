@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BookOpen, Clock, Trash2, Search, PlusCircle } from 'lucide-react';
-import axios from 'axios';
 import API from "../api";
 
 const History = () => {
