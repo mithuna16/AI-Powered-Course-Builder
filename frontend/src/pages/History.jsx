@@ -14,7 +14,8 @@ const History = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await API.get('/courses');
+      const userId = localStorage.getItem("userId");
+      const response = await API.get(`/courses/user/${userId}`);
       setCourses(response.data);
     } catch (err) {
       console.error('Error fetching courses:', err);

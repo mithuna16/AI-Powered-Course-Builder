@@ -22,7 +22,8 @@ const Analytics = () => {
     // ── 1. Fetch real courses from backend ──────────────────────────────────
     let realCourses = [];
     try {
-      const res = await API.get('/courses');
+    const userId = localStorage.getItem("userId");
+    const res = await API.get(`/courses/user/${userId}`);
       realCourses = res.data || [];
     } catch (e) { console.error('Courses fetch failed', e); }
     setCourses(realCourses);

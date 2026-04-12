@@ -46,7 +46,8 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const userId = localStorage.getItem('userId');
-      const response = await API.post('/courses/generate', { topic, userId });
+      const response = await API.get(`/courses/user/${userId}`)
+                               .then(res => setTotalCourses(res.data.length))
       const xp = parseInt(localStorage.getItem('userXp') || '0');
       localStorage.setItem('userXp', (xp + 10).toString());
       navigate(`/course/${response.data.id}`);
