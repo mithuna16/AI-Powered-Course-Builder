@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
 import API from "../api";
 
 const AuthContext = createContext();
@@ -24,7 +23,6 @@ export const AuthProvider = ({ children }) => {
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
-      axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
     }
     setLoading(false);
   }, []);
@@ -51,8 +49,6 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('userXp', (response.data.xp || 0).toString());
         setToken(mockToken);
         setUser(userData);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${mockToken}`;
-
         return { success: true };
       } else {
         return { success: false, message: 'Invalid credentials' };
@@ -76,7 +72,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
     localStorage.removeItem('userId');
     localStorage.removeItem('userXp');
-    delete axios.defaults.headers.common['Authorization'];
     setToken(null);
     setUser(null);
   };

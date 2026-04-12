@@ -5,7 +5,6 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
 import { TrendingUp, Award, Target, AlertCircle, BookOpen, Clock } from 'lucide-react';
-import axios from 'axios';
 import API from "../api";
 
 const Analytics = () => {

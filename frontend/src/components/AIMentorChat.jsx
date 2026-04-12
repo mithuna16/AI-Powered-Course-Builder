@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Sparkles, Bot } from 'lucide-react';
-import axios from 'axios';
 import API from "../api";
 
 const AIMentorChat = () => {

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, CheckCircle2, XCircle, ArrowRight, RotateCcw, Home, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import API from "../api";
 
 

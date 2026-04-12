@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles, BookOpen, Clock, TrendingUp } from 'lucide-react';
-import axios from 'axios';
 import API from "../api";
 
 const Dashboard = () => {
@@ -24,7 +23,7 @@ const Dashboard = () => {
         : parseFloat((totalSeconds / 60).toFixed(0));
       setLearningHours(hours);
 
-      axios.get('/courses')
+      API.get('/courses')
         .then(res => setTotalCourses(Array.isArray(res.data) ? res.data.length : 0))
         .catch(() => {
           const keys = Object.keys(localStorage).filter(k => k.startsWith('progress_'));
