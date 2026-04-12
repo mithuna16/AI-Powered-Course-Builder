@@ -38,14 +38,14 @@ public class CourseController {
         course.setContent(content);
         course.setLevel("Generated");
         course.setDuration(5);
-
+        course.setUserId(Long.parseLong(request.get("userId")));
         return repo.save(course);
     }
 
     // GET ALL
-    @GetMapping
-    public List<Course> getAllCourses() {
-        return repo.findAll();
+    @GetMapping("/user/{userId}")
+    public List<Course> getCoursesByUser(@PathVariable Long userId) {
+        return repo.findByUserId(userId);
     }
 
     // GET BY ID
