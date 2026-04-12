@@ -23,12 +23,11 @@ const Dashboard = () => {
         : parseFloat((totalSeconds / 60).toFixed(0));
       setLearningHours(hours);
 
-      API.get('/courses')
-        .then(res => setTotalCourses(Array.isArray(res.data) ? res.data.length : 0))
-        .catch(() => {
-          const keys = Object.keys(localStorage).filter(k => k.startsWith('progress_'));
-          setTotalCourses(keys.length);
-        });
+     const userId = localStorage.getItem("userId");
+
+     API.get(`/courses/user/${userId}`)
+       .then(res => setTotalCourses(Array.isArray(res.data) ? res.data.length : 0))
+       .catch(() => setTotalCourses(0));
     };
 
     syncStats(); // run on mount
@@ -46,8 +45,11 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const userId = localStorage.getItem('userId');
-      const response = await API.get(`/courses/user/${userId}`)
-                               .then(res => setTotalCourses(res.data.length))
+      const response = await API.post('/courses/generate', {
+        topic,
+        userId
+      });
+      setTotalCourses(prev => prev + 1);
       const xp = parseInt(localStorage.getItem('userXp') || '0');
       localStorage.setItem('userXp', (xp + 10).toString());
       navigate(`/course/${response.data.id}`);
