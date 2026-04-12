@@ -60,18 +60,11 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
-
-  const totalSeconds = parseInt(localStorage.getItem('learningSeconds') || '0');
-  const isHours = totalSeconds >= 3600;
-  const timeValue = isHours
-    ? parseFloat((totalSeconds / 3600).toFixed(1)).toString()
-    : Math.floor(totalSeconds / 60).toString();
-  const timeLabel = isHours ? 'Learning Hours' : 'Learning Mins';
-
+  const timeLabel = 'Learning Time';
   const stats = [
     { icon: BookOpen,   label: 'Total Courses',  value: totalCourses.toString(), color: '#6C63FF', bg: 'rgba(108,99,255,0.15)' },
     { icon: TrendingUp, label: 'Quizzes Taken',  value: quizzesTaken.toString(), color: '#00D4AA', bg: 'rgba(0,212,170,0.15)'  },
-    { icon: Clock,      label: timeLabel,         value: timeValue,               color: '#FF6B6B', bg: 'rgba(255,107,107,0.15)' },
+    { icon: Clock,      label: timeLabel,        value: learningHours.toString(), color: '#FF6B6B', bg: 'rgba(255,107,107,0.15)' },
   ];
 
   return (

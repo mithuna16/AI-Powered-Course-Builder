@@ -234,7 +234,6 @@ const CourseViewer = () => {
 // ─── Track time spent on this course page ───────────────────────────────────
 useEffect(() => {
   let lastSaved = Date.now(); // track from last save point, not from mount
-
   const saveTime = () => {
     const now = Date.now();
     const secondsSpent = Math.floor((now - lastSaved) / 1000);
@@ -254,7 +253,7 @@ useEffect(() => {
   };
 
   // Save every 10 seconds while on the page
-  const interval = setInterval(saveTime, 10000);
+  const interval = setInterval(saveTime, 5000); // every 5 seconds
 
   // Save immediately when tab becomes hidden
   const handleVisibility = () => {
