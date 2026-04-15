@@ -20,22 +20,21 @@ const Dashboard = () => {
       const totalSeconds = parseInt(localStorage.getItem('learningSeconds') || '0');
       const hours = (totalSeconds / 3600).toFixed(1);
       setLearningHours(hours);
-      const xp = parseInt(localStorage.getItem('userXp') || '0');
-     const userId = localStorage.getItem("userId");
 
-     API.get(`/courses/user/${userId}`)
-       .then(res => setTotalCourses(Array.isArray(res.data) ? res.data.length : 0))
-       .catch(() => setTotalCourses(0));
+      const userId = localStorage.getItem("userId");
+
+      API.get(`/courses/user/${userId}`)
+        .then(res => setTotalCourses(Array.isArray(res.data) ? res.data.length : 0))
+        .catch(() => setTotalCourses(0));
     };
 
-    syncStats(); // run on mount
+    syncStats();
 
-    // Re-sync when tab becomes visible (fires AFTER CourseViewer saves time)
-    const handleVisibility = () => {
-      if (!document.hidden) syncStats();
-    };
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () => document.removeEventListener('visibilitychange', handleVisibility);
+    // 🔥 THIS IS THE FIX
+    const interval = setInterval(syncStats, 3000);
+
+    return () => clearInterval(interval);
+
   }, []);
 
   const handleGenerate = async () => {

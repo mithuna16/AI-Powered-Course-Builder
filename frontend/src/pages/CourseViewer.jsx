@@ -253,7 +253,7 @@ useEffect(() => {
   };
 
   // Save every 10 seconds while on the page
-  const interval = setInterval(saveTime, 5000); // every 5 seconds
+ const interval = setInterval(saveTime, 3000); // every 3 seconds
 
   // Save immediately when tab becomes hidden
   const handleVisibility = () => {
