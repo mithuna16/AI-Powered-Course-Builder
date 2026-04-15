@@ -27,6 +27,15 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
+ useEffect(() => {
+   const syncXP = () => {
+     const xp = parseInt(localStorage.getItem('userXp') || '0');
+     setUser(prev => prev ? { ...prev, xp } : prev);
+   };
+
+   window.addEventListener('storage', syncXP);
+   return () => window.removeEventListener('storage', syncXP);
+ }, []);
 
   const login = async (email, password) => {
     try {

@@ -18,11 +18,9 @@ const Dashboard = () => {
       setQuizzesTaken(quizCount);
 
       const totalSeconds = parseInt(localStorage.getItem('learningSeconds') || '0');
-      const hours = totalSeconds >= 3600
-        ? parseFloat((totalSeconds / 3600).toFixed(1))
-        : parseFloat((totalSeconds / 60).toFixed(0));
+      const hours = (totalSeconds / 3600).toFixed(1);
       setLearningHours(hours);
-
+      const xp = parseInt(localStorage.getItem('userXp') || '0');
      const userId = localStorage.getItem("userId");
 
      API.get(`/courses/user/${userId}`)

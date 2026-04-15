@@ -77,8 +77,8 @@ const handleNext = () => {
     const correctAnswers = questions.filter((q, i) => selectedAnswers[i] === q.correctAnswer).length;
 
     const earnedXP = correctAnswers * 10;
-    const prevXP = parseInt(localStorage.getItem('xp') || '0');
-    localStorage.setItem('xp', (prevXP + earnedXP).toString());
+   const prevXP = parseInt(localStorage.getItem('userXp') || '0');
+   localStorage.setItem('userXp', (prevXP + earnedXP).toString());
 
     const quizCount = parseInt(localStorage.getItem('quizzesTaken') || '0');
     localStorage.setItem('quizzesTaken', (quizCount + 1).toString());
