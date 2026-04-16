@@ -354,17 +354,23 @@ useEffect(() => {
       </div>
 
       {/* Two-column layout */}
-      <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+      <div style={{
+        display: 'flex',
+        flexDirection: window.innerWidth < 768 ? 'column' : 'row',
+        gap: 20,
+        alignItems: 'flex-start'
+      }}>
 
         {/* ── Sidebar ── */}
         <motion.div
           initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
           style={{
-            width: 280, flexShrink: 0,
+            width: window.innerWidth < 768 ? '100%' : 280, flexShrink: 0,
             background: 'rgba(255,255,255,0.04)',
             border: '1px solid rgba(255,255,255,0.08)',
             borderRadius: 20, padding: '20px 16px',
-            position: 'sticky', top: 20,
+            position: window.innerWidth < 768 ? 'relative' : 'sticky',
+            top: window.innerWidth < 768 ? 'auto' : 20,
             maxHeight: 'calc(100vh - 120px)', overflowY: 'auto'
           }}
         >
@@ -424,7 +430,10 @@ useEffect(() => {
 
         {/* Main content */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          style={{ flex: 1, minWidth: 0, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: '28px 32px' }}>
+         style={{
+           flex: 1,
+           minWidth: 0,
+           width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: '28px 32px' }}>
           <div style={{ lineHeight: 1.7 }}>
             {formatContent(course.content)}
           </div>
